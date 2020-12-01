@@ -53,3 +53,31 @@ func (http *AwifiHttpApi) SendMessage(ctx iris.Context) {
 
 }
 
+func (http *AwifiHttpApi) TestMessage(ctx iris.Context) {
+
+        values := map[string]string{"message": "xxxxxxxxxxxxxx", "topic": "host.teamwork.performance"}
+
+        jsonValue, _ := json.Marshal(values)
+
+        flag := http.service.JsonPost("/sendmsg", jsonValue)
+        if flag {
+                ctx.JSON(iris.Map{
+
+                        "code": 200,
+
+                        "message": "success",
+
+                        "data": "",
+                })
+
+        } else {
+                ctx.JSON(iris.Map{
+                        "code":    500,
+                        "message": "error",
+                        "data":    "error",
+                })
+
+        }
+
+}
+

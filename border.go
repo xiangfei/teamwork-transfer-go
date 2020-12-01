@@ -26,7 +26,7 @@ func main() {
         httpservice := service.NewHttpServiceFromClient(httpclient)
         httpapi :=api.NewAwifiHttpApi(httpservice)
         app.Post("/sendmsg" ,  httpapi.SendMessage)       
-        
+        app.Get("/testmsg" , httpapi.TestMessage)       
         // zk api
 	app.Post("/kickcollect", zkapi.Kickcollect)
 	app.Post("/create_service_task", zkapi.CreateServiceTask)
