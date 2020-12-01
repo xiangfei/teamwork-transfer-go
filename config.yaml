@@ -1,0 +1,9 @@
+zkurl: 
+  - "192.168.224.250:2181"
+zkusername: "wifi2zk"
+zkpassword: "awifi456"
+center_http_url: 
+  - "http://192.168.226.35:4567"
+kafka_url: 
+  - "192.168.224.250:9092"
+
