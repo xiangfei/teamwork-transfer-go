@@ -23,3 +23,21 @@
 ### 转发异常
 
 - ruby 客户端手动处理
+
+
+### 安装
+
+1. 安装go
+2. 下载依赖包
+
+```
+# 使用代理
+export GO111MODULE=on
+export GOPROXY=https://goproxy.io
+
+```
+3. go mod download
+
+4. go build border.go
+
+5. go build center.go
