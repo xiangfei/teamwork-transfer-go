@@ -1,0 +1,17 @@
+//go_package grpc;
+syntax = "proto3";
+
+package proto;
+service Message {
+ rpc SendMessage (KafkaMessageRequest) returns (KafkaMessageReply) {}
+
+}
+
+message KafkaMessageRequest {
+  string topic = 1;
+  string message = 2 ;
+}
+
+message KafkaMessageReply {
+  string message = 1;
+}
