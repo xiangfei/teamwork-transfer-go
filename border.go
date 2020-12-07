@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+        "runtime" 
 	"teamwork-transfer-go/api"
 	"teamwork-transfer-go/client"
 	//"teamwork-transfer-go/config"
@@ -10,6 +11,7 @@ import (
 )
 
 func main() {
+        runtime.GOMAXPROCS(runtime.NumCPU())
 	zkclient := client.GetAwifiZkSingleton()
 	defer zkclient.Close()
 	zkservice := service.NewZkServiceFromClient(zkclient)

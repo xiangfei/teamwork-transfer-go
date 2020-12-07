@@ -1,6 +1,7 @@
 package main
 
 import (
+        "runtime"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
 	"google.golang.org/grpc"
@@ -12,6 +13,7 @@ import (
 )
 
 func main() {
+        runtime.GOMAXPROCS(runtime.NumCPU())
 	kafkaclient := client.GetAwifiKafkaSingleton()
 	defer kafkaclient.Close()
 	kafkaservice := service.NewKafkaServiceFromClient(kafkaclient)

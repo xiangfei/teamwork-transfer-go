@@ -3,7 +3,7 @@ package main
 import (
 	//"net/http"
 	"github.com/valyala/tcplisten"
-
+        "runtime"
 	"teamwork-transfer-go/api"
 	"teamwork-transfer-go/client"
 	//"teamwork-transfer-go/config"
@@ -13,6 +13,7 @@ import (
 )
 
 func main() {
+        runtime.GOMAXPROCS(runtime.NumCPU())
 	kafkaclient := client.GetAwifiKafkaSingleton()
 	defer kafkaclient.Close()
 	kafkaservice := service.NewKafkaServiceFromClient(kafkaclient)
