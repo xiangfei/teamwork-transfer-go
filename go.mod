@@ -21,6 +21,7 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/ryanuber/columnize v2.1.0+incompatible // indirect
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
+	github.com/silenceper/pool v1.0.0 // indirect
 	github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a
 	github.com/vmihailenco/msgpack/v5 v5.0.0-rc.3 // indirect
 	google.golang.org/grpc v1.27.0

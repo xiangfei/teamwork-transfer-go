@@ -12,9 +12,18 @@ import (
 
 func main() {
         runtime.GOMAXPROCS(runtime.NumCPU())
-	kafkaclient := client.GetAwifiKafkaSingleton()
-	defer kafkaclient.Close()
-	kafkaservice := service.NewKafkaServiceFromClient(kafkaclient)
+	//kafkaclient := client.GetAwifiKafkaSingleton()
+	//defer kafkaclient.Close()
+	//kafkaservice := service.NewKafkaServiceFromClient(kafkaclient) 
+        kafkaclientlist := client.NewAwifiKafkaList()
+        for i := 0; i < runtime.NumCPU(); i++ {
+                //fmt.Println(runtime.NumCPU())
+                kafkaclient := client.NewAwifiKafka()
+                kafkaclientlist.AddKafkaClient(kafkaclient)
+        }
+        defer kafkaclientlist.Close()
+        kafkaservice := service.NewKafkaServiceFromClient(kafkaclientlist)
+
 	kafkaapi := api.NewAwifiKafkaApi(kafkaservice)
         
         baseapi :=api.NewAwifiBaseApi()

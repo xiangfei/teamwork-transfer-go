@@ -5,11 +5,12 @@ import (
 )
 
 type AwifiKafkaService struct {
-        zkclient *client.AwifiKafka
+        //zkclient []*client.AwifiKafka
+        zkclient *client.AwifiKafkaList
 }
 
 
-func NewKafkaServiceFromClient(zkclient *client.AwifiKafka) *AwifiKafkaService {
+func NewKafkaServiceFromClient(zkclient *client.AwifiKafkaList) *AwifiKafkaService {
 
         return &AwifiKafkaService{zkclient}
 
@@ -19,8 +20,9 @@ func NewKafkaServiceFromClient(zkclient *client.AwifiKafka) *AwifiKafkaService {
 
 func (service *AwifiKafkaService) Deliver_Messages(topic string , message string) bool{
 
-
-    service.zkclient.DeliverMessage(topic , message)
+    service.zkclient.RandomGetClient().DeliverMessage(topic , message)
     return true 
 
 }
+
+

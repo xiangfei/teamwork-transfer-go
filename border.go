@@ -43,6 +43,13 @@ func main() {
 	app.Post("/list_client_agent_task", zkapi.ListClientAgentTask)
 	app.Post("/list_service_task", zkapi.ListServiceTask)
 	app.Post("/list_service_schedule_task", zkapi.ListServiceScheduleTask)
+        app.Post("/list_master_clients", zkapi.ListMasterClients)
+        app.Post("/list_gateway_clients", zkapi.ListGatewayClients)
+        app.Post("/list_collect_clients", zkapi.ListCollectClients)
+        app.Post("/list_control_clients", zkapi.ListControlClients)
+        app.Post("/list_agent_clients", zkapi.ListAgentClients)
+        app.Post("/list_notify_clients", zkapi.ListNotifyClients)
+        app.Post("/list_heartbeat_clients", zkapi.ListHeartbeatClients)
 
         // server
 	srv := &http.Server{Addr: ":4568"}

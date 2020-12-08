@@ -34,7 +34,7 @@ func (c *conf) getConf() *conf {
 	return c
 }
 
-func newConfig() *conf {
+func NewConfig() *conf {
 	var c conf
 	return c.getConf()
 }
@@ -45,7 +45,7 @@ func SingleConfigInstance() *conf {
 		lock.Lock()
 		defer lock.Unlock()
 		if singleInstance == nil {
-			singleInstance = newConfig()
+			singleInstance = NewConfig()
 			return singleInstance
 		}
 	}
