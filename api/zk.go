@@ -2,10 +2,10 @@ package api
 
 import (
 	"encoding/json"
-        "fmt"
-        "strconv"
+	"fmt"
 	"github.com/kataras/iris/v12"
-        "teamwork-transfer-go/service"
+	"strconv"
+	"teamwork-transfer-go/service"
 )
 
 type AwifiZkApi struct {
@@ -21,14 +21,14 @@ func NewAwifiZkApi(svc *service.AwifiZkService) *AwifiZkApi {
 
 // http post body
 type ZookeeperTask struct {
-	Mac    string `json: "mac" msgpack:"mac"`
-	Taskid int    `json: "taskid" msgpack:"taskid"`
-	Opts   Opts   `json: "opts" msgpack:"opts"`
+	Mac    string      `json: "mac" msgpack:"mac"`
+	Taskid interface{} `json: "taskid" msgpack:"taskid"`
+	Opts   Opts        `json: "opts" msgpack:"opts"`
 }
 
 type ZookeeperServiceScheduleTask struct {
-	Taskid string `json: "taskid" msgpack:"taskid"`
-	Opts   Opts   `json: "opts" msgpack:"opts"`
+	Taskid interface{} `json: "taskid" msgpack:"taskid"`
+	Opts   Opts        `json: "opts" msgpack:"opts"`
 }
 type Opts map[string]interface{}
 
@@ -38,7 +38,7 @@ func (zk *AwifiZkApi) Kickcollect(ctx iris.Context) {
 
 	var zookeepertask ZookeeperTask
 	ctx.ReadJSON(&zookeepertask)
-	v := zk.svc.Kickcollect( zookeepertask.Mac)
+	v := zk.svc.Kickcollect(zookeepertask.Mac)
 	if v {
 		ctx.JSON(iris.Map{
 			"code":    200,
@@ -65,7 +65,7 @@ func (zk *AwifiZkApi) CreateServiceTask(ctx iris.Context) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	v := zk.svc.Create_service_once_task( string(str))
+	v := zk.svc.Create_service_once_task(string(str))
 	ctx.JSON(iris.Map{
 		"code":    200,
 		"message": "success",
@@ -82,8 +82,7 @@ func (zk *AwifiZkApi) CreateServiceScheduleTask(ctx iris.Context) {
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	v := zk.svc.Create_service_schedule_task( zookeepertask.Taskid, string(str))
+	v := zk.svc.Create_service_schedule_task(convert_task_id(zookeepertask.Taskid), string(str))
 	if v {
 		ctx.JSON(iris.Map{
 			"code":    200,
@@ -105,7 +104,7 @@ func (zk *AwifiZkApi) CreateServiceScheduleTask(ctx iris.Context) {
 func (zk *AwifiZkApi) DestroyServiceScheduleTask(ctx iris.Context) {
 	var zookeepertask ZookeeperServiceScheduleTask
 	ctx.ReadJSON(&zookeepertask)
-	v := zk.svc.Destroy_service_schedule_task( zookeepertask.Taskid)
+	v := zk.svc.Destroy_service_schedule_task(convert_task_id(zookeepertask.Taskid))
 	if v {
 		ctx.JSON(iris.Map{
 			"code":    200,
@@ -132,7 +131,7 @@ func (zk *AwifiZkApi) CreateClientScheduleTask(ctx iris.Context) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	v := zk.svc.Create_client_schedule_task(strconv.Itoa(zookeepertask.Taskid), zookeepertask.Mac, string(str))
+	v := zk.svc.Create_client_schedule_task(convert_task_id(zookeepertask.Taskid), zookeepertask.Mac, string(str))
 
 	if v {
 		ctx.JSON(iris.Map{
@@ -156,7 +155,7 @@ func (zk *AwifiZkApi) DestroyClientScheduleTask(ctx iris.Context) {
 
 	var zookeepertask ZookeeperTask
 	ctx.ReadJSON(&zookeepertask)
-	v := zk.svc.Destroy_client_schedule_task( strconv.Itoa(zookeepertask.Taskid), zookeepertask.Mac)
+	v := zk.svc.Destroy_client_schedule_task(convert_task_id(zookeepertask.Taskid), zookeepertask.Mac)
 	if v {
 		ctx.JSON(iris.Map{
 			"code":    200,
@@ -178,7 +177,7 @@ func (zk *AwifiZkApi) DestroyClientScheduleTask(ctx iris.Context) {
 func (zk *AwifiZkApi) ListClientScheduleTask(ctx iris.Context) {
 	var zookeepertask ZookeeperTask
 	ctx.ReadJSON(&zookeepertask)
-	v := zk.svc.List_client_schedule_task( zookeepertask.Mac)
+	v := zk.svc.List_client_schedule_task(zookeepertask.Mac)
 
 	ctx.JSON(iris.Map{
 		"code":    200,
@@ -208,7 +207,7 @@ func (zk *AwifiZkApi) DestroyClientOnceTask(ctx iris.Context) {
 
 	var zookeepertask ZookeeperTask
 	ctx.ReadJSON(&zookeepertask)
-	v := zk.svc.Destroy_client_once_task(strconv.Itoa(zookeepertask.Taskid), zookeepertask.Mac)
+	v := zk.svc.Destroy_client_once_task(convert_task_id(zookeepertask.Taskid), zookeepertask.Mac)
 
 	if v {
 		ctx.JSON(iris.Map{
@@ -277,96 +276,97 @@ func (zk *AwifiZkApi) ListServiceScheduleTask(ctx iris.Context) {
 
 func (zk *AwifiZkApi) ListMasterClients(ctx iris.Context) {
 
-      v := zk.svc.List_master_client()
-     
-      current := zk.svc.Current_master_client()
-   
-        ctx.JSON(iris.Map{
-                "code":    200,
-                "message": "success",
-                "data":   iris.Map{"current":  current , "list":  v } ,
-        })
+	v := zk.svc.List_master_client()
 
+	current := zk.svc.Current_master_client()
+
+	ctx.JSON(iris.Map{
+		"code":    200,
+		"message": "success",
+		"data":    iris.Map{"current": current, "list": v},
+	})
 
 }
 
 func (zk *AwifiZkApi) ListControlClients(ctx iris.Context) {
 
-    v := zk.svc.List_control_clients()
+	v := zk.svc.List_control_clients()
 
-        ctx.JSON(iris.Map{
-                "code":    200,
-                "message": "success",
-                "data":    v,
-        })
-
+	ctx.JSON(iris.Map{
+		"code":    200,
+		"message": "success",
+		"data":    v,
+	})
 
 }
 
 func (zk *AwifiZkApi) ListCollectClients(ctx iris.Context) {
 
-    v := zk.svc.List_collect_clients()
+	v := zk.svc.List_collect_clients()
 
-        ctx.JSON(iris.Map{
-                "code":    200,
-                "message": "success",
-                "data":    v,
-        })
-
+	ctx.JSON(iris.Map{
+		"code":    200,
+		"message": "success",
+		"data":    v,
+	})
 
 }
 
 func (zk *AwifiZkApi) ListGatewayClients(ctx iris.Context) {
 
-    v := zk.svc.List_gateway_clients()
+	v := zk.svc.List_gateway_clients()
 
-        ctx.JSON(iris.Map{
-                "code":    200,
-                "message": "success",
-                "data":    v,
-        })
-
+	ctx.JSON(iris.Map{
+		"code":    200,
+		"message": "success",
+		"data":    v,
+	})
 
 }
 
 func (zk *AwifiZkApi) ListHeartbeatClients(ctx iris.Context) {
 
-    v := zk.svc.List_heartbeat_clients()
+	v := zk.svc.List_heartbeat_clients()
 
-        ctx.JSON(iris.Map{
-                "code":    200,
-                "message": "success",
-                "data":    v,
-        })
-
+	ctx.JSON(iris.Map{
+		"code":    200,
+		"message": "success",
+		"data":    v,
+	})
 
 }
 
 func (zk *AwifiZkApi) ListNotifyClients(ctx iris.Context) {
 
-    v := zk.svc.List_notify_clients()
+	v := zk.svc.List_notify_clients()
 
-        ctx.JSON(iris.Map{
-                "code":    200,
-                "message": "success",
-                "data":    v,
-        })
-
+	ctx.JSON(iris.Map{
+		"code":    200,
+		"message": "success",
+		"data":    v,
+	})
 
 }
 
 func (zk *AwifiZkApi) ListAgentClients(ctx iris.Context) {
 
-    v := zk.svc.List_agent_clients()
+	v := zk.svc.List_agent_clients()
 
-        ctx.JSON(iris.Map{
-                "code":    200,
-                "message": "success",
-                "data":    v,
-        })
-
+	ctx.JSON(iris.Map{
+		"code":    200,
+		"message": "success",
+		"data":    v,
+	})
 
 }
 
-
-
+func convert_task_id(str interface{}) string {
+	switch t := str.(type) {
+	default:
+		return ""
+	case string:
+		return t
+	case int:
+		return strconv.Itoa(t)
+	}
+}
