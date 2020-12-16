@@ -68,6 +68,11 @@ func (svc *AwifiZkService) Create_service_schedule_task(taskid string, opts stri
 
 	path := "/awifi/task/master"
 	full_task_id := path + "/" + taskid
+	s := svc.zkclient.Exist(full_task_id)
+	if s {
+		svc.zkclient.Del(full_task_id)
+	}
+
 	return svc.zkclient.Add(full_task_id, opts)
 
 }
@@ -75,8 +80,12 @@ func (svc *AwifiZkService) Create_service_schedule_task(taskid string, opts stri
 func (svc *AwifiZkService) Destroy_service_schedule_task(taskid string) bool {
 	path := "/awifi/task/master"
 	full_task_id := path + "/" + taskid
+	s := svc.zkclient.Exist(full_task_id)
+	if s {
+		return svc.zkclient.Del(full_task_id)
+	}
 
-	return svc.zkclient.Del(full_task_id)
+	return true
 
 }
 
@@ -112,14 +121,14 @@ func (svc *AwifiZkService) List_service_schedule_task() []string {
 	return svc.zkclient.Children(base)
 }
 
-func (svc *AwifiZkService) List_master_client() []string { 
-        base := "/awifi/client/master"
-	return  svc.zkclient.Children(base)
+func (svc *AwifiZkService) List_master_client() []string {
+	base := "/awifi/client/master"
+	return svc.zkclient.Children(base)
 }
 
 func (svc *AwifiZkService) Current_master_client() string {
 
-     return svc.zkclient.Get("/awifi/client/master")
+	return svc.zkclient.Get("/awifi/client/master")
 }
 
 func (svc *AwifiZkService) List_gateway_clients() []string {
