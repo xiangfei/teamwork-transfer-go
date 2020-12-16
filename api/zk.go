@@ -361,12 +361,19 @@ func (zk *AwifiZkApi) ListAgentClients(ctx iris.Context) {
 }
 
 func convert_task_id(str interface{}) string {
-	switch t := str.(type) {
+     
+	switch t := str.(type) { 
 	default:
+                fmt.Println(t) 
+                fmt.Printf(" %T", t)
 		return ""
 	case string:
 		return t
 	case int:
 		return strconv.Itoa(t)
+        case int64:
+               return strconv.FormatInt(t, 10)
+        case float64:
+               return strconv.FormatInt(int64(t), 10)
 	}
 }
