@@ -90,7 +90,8 @@ func (svc *AwifiZkService) Destroy_service_schedule_task(taskid string) bool {
 }
 
 func (svc *AwifiZkService) Create_service_once_task(opts string) string {
-	base := "/_zkqueues/gateway"
+	base := "/_zkqueues/gateway/message"
+
 	return svc.zkclient.SequenceAdd(base, opts)
 }
 
