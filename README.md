@@ -43,7 +43,7 @@ export GOPROXY=https://goproxy.io
 5. go build center.go
 
 # 性能
-
+## center 连接kafka
 ```
 [root@autotestweb devops-server]# ab -n 20000 -c 200  http://127.0.0.1:4567/testmsg
 This is ApacheBench, Version 2.3 <$Revision: 1430300 $>
@@ -100,5 +100,65 @@ Percentage of the requests served within a certain time (ms)
   98%     23
   99%     35
  100%   1005 (longest request)
+
+```
+##  border 连接 center 连接kafka
+
+```
+[root@autotestweb ~]# ab -n 20000 -c 2000 http://127.0.0.1:4568/testmsg
+This is ApacheBench, Version 2.3 <$Revision: 1430300 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient)
+Completed 2000 requests
+Completed 4000 requests
+Completed 6000 requests
+Completed 8000 requests
+Completed 10000 requests
+Completed 12000 requests
+Completed 14000 requests
+Completed 16000 requests
+Completed 18000 requests
+Completed 20000 requests
+Finished 20000 requests
+
+
+Server Software:        
+Server Hostname:        127.0.0.1
+Server Port:            4568
+
+Document Path:          /testmsg
+Document Length:        56 bytes
+
+Concurrency Level:      2000
+Time taken for tests:   2.806 seconds
+Complete requests:      20000
+Failed requests:        0
+Write errors:           0
+Total transferred:      3580000 bytes
+HTML transferred:       1120000 bytes
+Requests per second:    7126.40 [#/sec] (mean)
+Time per request:       280.647 [ms] (mean)
+Time per request:       0.140 [ms] (mean, across all concurrent requests)
+Transfer rate:          1245.73 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0  103 297.3      3    1017
+Processing:     2   57  52.8     42     399
+Waiting:        1   54  52.9     39     399
+Total:          2  160 305.7     47    1300
+
+Percentage of the requests served within a certain time (ms)
+  50%     47
+  66%     61
+  75%     79
+  80%    109
+  90%    302
+  95%   1060
+  98%   1077
+  99%   1104
+ 100%   1300 (longest request)
 
 ```
